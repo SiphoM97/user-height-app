@@ -3,6 +3,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const Submission = require('./models/Submission'); // ✅ Model imported from external file
+
 const app = express();
 const PORT = 5000;
 
@@ -11,20 +13,9 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB Atlas'))
-.catch((err) => console.error('MongoDB connection error:', err));
-
-// MongoDB Schema and Model
-const submissionSchema = new mongoose.Schema({
-  name: String,
-  height: Number,
-});
-
-const Submission = mongoose.model('Submission', submissionSchema);
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // Default route
 app.get('/', (req, res) => {
@@ -40,7 +31,7 @@ app.post('/submit', async (req, res) => {
   }
 
   try {
-    // Save to DB
+    // Save submission to DB
     const newSubmission = new Submission({ name, height: parseFloat(height) });
     await newSubmission.save();
 
@@ -49,24 +40,23 @@ app.post('/submit', async (req, res) => {
     const totalHeight = allSubmissions.reduce((sum, entry) => sum + entry.height, 0);
     const averageHeight = totalHeight / allSubmissions.length;
 
-    // Simulated email
+    // Simulate sending email
     console.log(`✉️ Email sent to ${email}:
   - Your height: ${height}
   - Average height: ${averageHeight.toFixed(2)}
     `);
 
-    return res.status(200).json({
+    res.status(200).json({
       message: 'Submission received!',
       averageHeight: averageHeight.toFixed(2),
     });
-
   } catch (error) {
-    console.error('Error saving submission:', error);
+    console.error('❌ Error saving submission:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-// Start server
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
