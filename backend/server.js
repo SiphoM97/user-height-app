@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const Submission = require('./models/Submission'); // ✅ Model imported from external file
+const Submission = require('./models/Submission'); // Model imported from external file
 
 const app = express();
 const PORT = 5000;
@@ -51,7 +51,7 @@ app.post('/submit', async (req, res) => {
       averageHeight: averageHeight.toFixed(2),
     });
   } catch (error) {
-    console.error('❌ Error saving submission:', error);
+    console.error(' Error saving submission:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
