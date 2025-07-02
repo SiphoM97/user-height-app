@@ -30,7 +30,7 @@ function App() {
 
       {/* Foreground Content Layer */}
       <div style={styles.content}>
-        <h1 style={styles.title}>User Height App</h1>
+        <h1 style={styles.title}>User Height</h1>
         <UserForm onSubmit={handleFormSubmit} />
       </div>
     </div>
